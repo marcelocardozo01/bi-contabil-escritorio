@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Lastro_Contabil"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f5d24d1a-0fc7-5cb0-a851-e72c2ff9af1e"
+  }
+}

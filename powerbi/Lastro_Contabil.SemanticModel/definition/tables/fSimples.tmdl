@@ -1,0 +1,108 @@
+table fSimples
+	lineageTag: a4471e86-fc99-54e9-96f5-e9c9ea820618
+
+	column CODIGO_CLIENTE
+		dataType: string
+		isHidden
+		lineageTag: f17085a7-fa7c-5caa-9e15-f835405c18cc
+		summarizeBy: none
+		sourceColumn: CODIGO_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column COMPETENCIA
+		dataType: dateTime
+		isHidden
+		formatString: dd/mm/yyyy
+		lineageTag: 603b06ba-d8d0-56b0-b56c-47e32b4726ab
+		summarizeBy: none
+		sourceColumn: COMPETENCIA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ANEXO
+		dataType: string
+		isHidden
+		lineageTag: 60a611c0-7063-53f8-992f-81b62412f5b1
+		summarizeBy: none
+		sourceColumn: ANEXO
+
+		annotation SummarizationSetBy = Automatic
+
+	column RBT12
+		dataType: double
+		isHidden
+		lineageTag: f41efc08-8c12-5e69-af30-654d7a7d6ec3
+		summarizeBy: none
+		sourceColumn: RBT12
+
+		annotation SummarizationSetBy = Automatic
+
+	column FAIXA
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ff70340e-8caf-52e9-965b-12f3bd7a40ad
+		summarizeBy: none
+		sourceColumn: FAIXA
+
+		annotation SummarizationSetBy = Automatic
+
+	column FOLGA_FAIXA
+		dataType: double
+		isHidden
+		lineageTag: 5b73179c-f3dd-5a1f-8cfb-f381df15c700
+		summarizeBy: none
+		sourceColumn: FOLGA_FAIXA
+
+		annotation SummarizationSetBy = Automatic
+
+	column USO_FAIXA
+		dataType: double
+		isHidden
+		lineageTag: 8157a611-f929-5b75-aee1-4ed4c509a60a
+		summarizeBy: none
+		sourceColumn: USO_FAIXA
+
+		annotation SummarizationSetBy = Automatic
+
+	column ALIQUOTA_EFETIVA
+		dataType: double
+		isHidden
+		lineageTag: 5d731521-1fff-51bc-8c21-8b9b32dde520
+		summarizeBy: none
+		sourceColumn: ALIQUOTA_EFETIVA
+
+		annotation SummarizationSetBy = Automatic
+
+	column LIMITE_SIMPLES
+		dataType: double
+		isHidden
+		lineageTag: 97e771c8-883f-5f39-9d04-65862d856421
+		summarizeBy: none
+		sourceColumn: LIMITE_SIMPLES
+
+		annotation SummarizationSetBy = Automatic
+
+	column USO_LIMITE_SIMPLES
+		dataType: double
+		isHidden
+		lineageTag: 43cf7058-c5b7-5283-a047-35290b46654b
+		summarizeBy: none
+		sourceColumn: USO_LIMITE_SIMPLES
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fSimples = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaExports & "simples_mensal.parquet")),
+				    Colunas = Table.SelectColumns(Fonte, {"CODIGO_CLIENTE", "COMPETENCIA", "ANEXO", "RBT12", "FAIXA", "FOLGA_FAIXA", "USO_FAIXA", "ALIQUOTA_EFETIVA", "LIMITE_SIMPLES", "USO_LIMITE_SIMPLES"}),
+				    Tipos = Table.TransformColumnTypes(Colunas, {{"CODIGO_CLIENTE", type text}, {"COMPETENCIA", type date}, {"ANEXO", type text}, {"RBT12", type number}, {"FAIXA", Int64.Type}, {"FOLGA_FAIXA", type number}, {"USO_FAIXA", type number}, {"ALIQUOTA_EFETIVA", type number}, {"LIMITE_SIMPLES", type number}, {"USO_LIMITE_SIMPLES", type number}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table

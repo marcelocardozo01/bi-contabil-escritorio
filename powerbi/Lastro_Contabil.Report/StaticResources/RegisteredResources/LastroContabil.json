@@ -1,0 +1,167 @@
+{
+  "name": "Lastro Contabil",
+  "dataColors": [
+    "#34E0BE",
+    "#F4FBFA",
+    "#FF8A65",
+    "#F5C04A",
+    "#9B8CF2",
+    "#F78FB3"
+  ],
+  "background": "#0C2A2C",
+  "foreground": "#F4FBFA",
+  "tableAccent": "#34E0BE",
+  "foregroundNeutralSecondary": "#A9C6C2",
+  "foregroundNeutralTertiary": "#7A9A96",
+  "backgroundLight": "#123A3B",
+  "backgroundNeutral": "#1B4A49",
+  "good": "#34E0BE",
+  "neutral": "#F5C04A",
+  "bad": "#FF6B5E",
+  "textClasses": {
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "color": "#F4FBFA"
+    },
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 11,
+      "color": "#F4FBFA"
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 10,
+      "color": "#F4FBFA"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 9,
+      "color": "#A9C6C2"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#0C2A2C"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#1B4A49"
+              }
+            },
+            "radius": 16
+          }
+        ],
+        "title": [
+          {
+            "fontColor": {
+              "solid": {
+                "color": "#F4FBFA"
+              }
+            },
+            "fontSize": 11
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "lineChart": {
+      "*": {
+        "valueAxis": [
+          {
+            "gridlineColor": {
+              "solid": {
+                "color": "#1B4A49"
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": "#A9C6C2"
+              }
+            },
+            "showAxisTitle": false
+          }
+        ],
+        "categoryAxis": [
+          {
+            "labelColor": {
+              "solid": {
+                "color": "#A9C6C2"
+              }
+            },
+            "showAxisTitle": false
+          }
+        ]
+      }
+    },
+    "clusteredColumnChart": {
+      "*": {
+        "valueAxis": [
+          {
+            "gridlineColor": {
+              "solid": {
+                "color": "#1B4A49"
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": "#A9C6C2"
+              }
+            },
+            "showAxisTitle": false
+          }
+        ],
+        "categoryAxis": [
+          {
+            "labelColor": {
+              "solid": {
+                "color": "#A9C6C2"
+              }
+            },
+            "showAxisTitle": false
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#061A1C"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "outspace": [
+          {
+            "color": {
+              "solid": {
+                "color": "#061A1C"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}

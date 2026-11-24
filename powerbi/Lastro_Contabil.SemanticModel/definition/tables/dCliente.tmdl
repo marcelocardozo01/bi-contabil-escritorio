@@ -1,0 +1,98 @@
+table dCliente
+	lineageTag: 407ef114-017a-51f5-bd1c-d3a6945183db
+
+	column CODIGO_CLIENTE
+		dataType: string
+		lineageTag: 73c3cc05-10b8-5dbb-a050-727e4b1fb360
+		summarizeBy: none
+		sourceColumn: CODIGO_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column CLIENTE
+		dataType: string
+		lineageTag: 5e9fc437-474a-5dd1-9c7c-d8004513b89d
+		summarizeBy: none
+		sourceColumn: CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column ATIVIDADE
+		dataType: string
+		lineageTag: a2a9b12f-2249-575a-947e-fee97008c07f
+		summarizeBy: none
+		sourceColumn: ATIVIDADE
+
+		annotation SummarizationSetBy = Automatic
+
+	column CIDADE
+		dataType: string
+		lineageTag: 3bf8082c-6da4-5193-9de5-a9dae9267338
+		summarizeBy: none
+		sourceColumn: CIDADE
+
+		annotation SummarizationSetBy = Automatic
+
+	column REGIME
+		dataType: string
+		lineageTag: 0ee033ab-e70f-5bdf-b83c-2927c3602ede
+		summarizeBy: none
+		sourceColumn: REGIME
+
+		annotation SummarizationSetBy = Automatic
+
+	column ANEXO_SIMPLES
+		dataType: string
+		lineageTag: 361d9c73-a08a-561f-b85e-1383a14b8bde
+		summarizeBy: none
+		sourceColumn: ANEXO_SIMPLES
+
+		annotation SummarizationSetBy = Automatic
+
+	column RESPONSAVEL
+		dataType: string
+		lineageTag: 99d9022a-7a0a-5fd6-a078-d3a77400b3bc
+		summarizeBy: none
+		sourceColumn: RESPONSAVEL
+
+		annotation SummarizationSetBy = Automatic
+
+	column HONORARIO
+		dataType: double
+		lineageTag: 58499997-bc93-5b67-adf9-9138fabd8edf
+		summarizeBy: none
+		sourceColumn: HONORARIO
+
+		annotation SummarizationSetBy = Automatic
+
+	column ULTIMO_BALANCETE
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: c1bc9c6a-a030-5d97-98ad-29314957d8d1
+		summarizeBy: none
+		sourceColumn: ULTIMO_BALANCETE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MESES_ATRASO
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e9ffcd6-ca3a-5ef3-afda-df13bc5280c7
+		summarizeBy: none
+		sourceColumn: MESES_ATRASO
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCliente = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaExports & "dim_cliente.parquet")),
+				    Colunas = Table.SelectColumns(Fonte, {"CODIGO_CLIENTE", "CLIENTE", "ATIVIDADE", "CIDADE", "REGIME", "ANEXO_SIMPLES", "RESPONSAVEL", "HONORARIO", "ULTIMO_BALANCETE", "MESES_ATRASO"}),
+				    Tipos = Table.TransformColumnTypes(Colunas, {{"CODIGO_CLIENTE", type text}, {"CLIENTE", type text}, {"ATIVIDADE", type text}, {"CIDADE", type text}, {"REGIME", type text}, {"ANEXO_SIMPLES", type text}, {"RESPONSAVEL", type text}, {"HONORARIO", type number}, {"ULTIMO_BALANCETE", type date}, {"MESES_ATRASO", Int64.Type}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table

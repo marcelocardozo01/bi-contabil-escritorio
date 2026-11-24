@@ -1,0 +1,65 @@
+table fAlerta
+	lineageTag: 6e7821aa-0d2f-522b-9d25-9e22a609d4c1
+
+	column CODIGO_CLIENTE
+		dataType: string
+		isHidden
+		lineageTag: 75c34781-a0c1-5f25-8c17-a1532b5da2bd
+		summarizeBy: none
+		sourceColumn: CODIGO_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column GRAVIDADE
+		dataType: string
+		lineageTag: 1596a09d-7c3a-5e13-ba44-d7f7fe6c4cb2
+		summarizeBy: none
+		sourceColumn: GRAVIDADE
+
+		annotation SummarizationSetBy = Automatic
+
+	column TEMA
+		dataType: string
+		lineageTag: 1bfc5868-3af3-5bef-8eda-bdc0419df0ef
+		summarizeBy: none
+		sourceColumn: TEMA
+
+		annotation SummarizationSetBy = Automatic
+
+	column ORDEM
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ae50e580-b6e5-5cae-a5e0-47c7c0e2540d
+		summarizeBy: none
+		sourceColumn: ORDEM
+
+		annotation SummarizationSetBy = Automatic
+
+	column TITULO
+		dataType: string
+		lineageTag: 9d20fcf8-6bd3-588d-aaaf-006ac7315635
+		summarizeBy: none
+		sourceColumn: TITULO
+
+		annotation SummarizationSetBy = Automatic
+
+	column TEXTO
+		dataType: string
+		lineageTag: b4c1afbd-723a-5129-813b-9179d9ffd091
+		summarizeBy: none
+		sourceColumn: TEXTO
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fAlerta = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaExports & "an_alertas.parquet")),
+				    Colunas = Table.SelectColumns(Fonte, {"CODIGO_CLIENTE", "GRAVIDADE", "TEMA", "ORDEM", "TITULO", "TEXTO"}),
+				    Tipos = Table.TransformColumnTypes(Colunas, {{"CODIGO_CLIENTE", type text}, {"GRAVIDADE", type text}, {"TEMA", type text}, {"ORDEM", Int64.Type}, {"TITULO", type text}, {"TEXTO", type text}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table

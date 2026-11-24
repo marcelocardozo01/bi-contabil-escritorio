@@ -1,0 +1,43 @@
+table dMes
+	lineageTag: a44442f2-7124-554f-a146-2aa7d5ff93a3
+
+	column COMPETENCIA
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: ea61f4fe-1be7-53fe-8049-d989e774fa71
+		summarizeBy: none
+		sourceColumn: COMPETENCIA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ANO_MES
+		dataType: string
+		isHidden
+		lineageTag: ce602a9e-9658-57b6-a8b5-7dfd78a0a098
+		summarizeBy: none
+		sourceColumn: ANO_MES
+
+		annotation SummarizationSetBy = Automatic
+
+	column MES_ROTULO
+		dataType: string
+		lineageTag: 27b4f053-e63b-5838-bd7c-af57adcbd3b6
+		summarizeBy: none
+		sourceColumn: MES_ROTULO
+		sortByColumn: ANO_MES
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dMes = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaExports & "dim_mes.parquet")),
+				    Colunas = Table.SelectColumns(Fonte, {"COMPETENCIA", "ANO_MES", "MES_ROTULO"}),
+				    Tipos = Table.TransformColumnTypes(Colunas, {{"COMPETENCIA", type date}, {"ANO_MES", type text}, {"MES_ROTULO", type text}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table

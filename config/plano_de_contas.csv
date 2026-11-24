@@ -1,0 +1,32 @@
+CONTA;DESCRICAO;GRUPO;NATUREZA
+1.1.01;Caixa e bancos;Ativo circulante;D
+1.1.02;Aplicações financeiras;Ativo circulante;D
+1.1.03;Clientes a receber;Ativo circulante;D
+1.1.04;Estoques;Ativo circulante;D
+1.2.01;Imobilizado;Ativo não circulante;D
+1.2.02;(-) Depreciação acumulada;Ativo não circulante;C
+2.1.01;Fornecedores;Passivo circulante;C
+2.1.02;Salários e encargos a pagar;Passivo circulante;C
+2.1.03;Impostos a recolher;Passivo circulante;C
+2.1.04;Empréstimos de curto prazo;Passivo circulante;C
+2.2.01;Empréstimos de longo prazo;Passivo não circulante;C
+2.3.01;Capital social;Patrimônio líquido;C
+2.3.02;Lucros ou prejuízos acumulados;Patrimônio líquido;C
+3.1.01;Receita de venda de mercadorias;Receita bruta;C
+3.1.02;Receita de prestação de serviços;Receita bruta;C
+3.2.01;(-) Impostos sobre a receita;Deduções da receita;D
+3.2.02;(-) Devoluções e abatimentos;Deduções da receita;D
+4.1.01;Custo das mercadorias vendidas;Custos;D
+4.1.02;Custo dos serviços prestados;Custos;D
+5.1.01;Salários;Despesas com pessoal;D
+5.1.02;Encargos sociais;Despesas com pessoal;D
+5.1.03;Pró-labore;Despesas com pessoal;D
+5.2.01;Aluguel;Despesas administrativas;D
+5.2.02;Energia, água e telecomunicações;Despesas administrativas;D
+5.2.03;Serviços de terceiros;Despesas administrativas;D
+5.2.04;Marketing e vendas;Despesas administrativas;D
+5.2.05;Outras despesas administrativas;Despesas administrativas;D
+5.3.01;Depreciação;Depreciação;D
+5.4.01;Despesas financeiras;Resultado financeiro;D
+5.4.02;Receitas financeiras;Resultado financeiro;C
+5.5.01;IRPJ e CSLL;Imposto sobre o lucro;D

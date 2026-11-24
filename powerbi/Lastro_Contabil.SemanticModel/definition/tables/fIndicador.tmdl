@@ -1,0 +1,289 @@
+table fIndicador
+	lineageTag: f3c139e3-2d44-5639-b716-a50c70ee5fd5
+
+	measure Faturamento = SUM(fIndicador[RECEITA_BRUTA])
+		formatString: \R\$ #,##0
+		lineageTag: 78955711-e656-5bba-a0a1-b4416d354176
+
+	measure 'Impostos e devoluções' = SUM(fIndicador[DEDUCOES])
+		formatString: \R\$ #,##0
+		lineageTag: 81cdff6a-9465-5860-b0ea-bd8cc3ceed3b
+
+	measure 'Receita líquida' = SUM(fIndicador[RECEITA_LIQUIDA])
+		formatString: \R\$ #,##0
+		lineageTag: 4a8cabf6-58fc-56da-9e56-6dca5a4ef463
+
+	measure 'Custo total' = SUM(fIndicador[CUSTOS])
+		formatString: \R\$ #,##0
+		lineageTag: 2c539a2d-3042-5ff9-b50d-60eeba428085
+
+	measure 'Lucro bruto' = SUM(fIndicador[LUCRO_BRUTO])
+		formatString: \R\$ #,##0
+		lineageTag: b579f8c9-2857-5bdc-9839-c9151b4fc779
+
+	measure 'Despesas com pessoal' = SUM(fIndicador[DESPESAS_PESSOAL])
+		formatString: \R\$ #,##0
+		lineageTag: cd059bb8-ae85-5a4b-ac2e-43ac9b8bb8a6
+
+	measure 'Despesas administrativas' = SUM(fIndicador[DESPESAS_ADMINISTRATIVAS])
+		formatString: \R\$ #,##0
+		lineageTag: d03488a1-1acd-5703-9527-e42185c7572b
+
+	measure 'Despesa de depreciação' = SUM(fIndicador[DEPRECIACAO])
+		formatString: \R\$ #,##0
+		lineageTag: 5684ecb8-07c1-57fb-ba9a-a97ea9388166
+
+	measure 'Resultado operacional' = SUM(fIndicador[RESULTADO_OPERACIONAL])
+		formatString: \R\$ #,##0
+		lineageTag: 537231a3-0db5-59f1-9b83-2dccc627a8da
+
+	measure 'Resultado financeiro' = SUM(fIndicador[RESULTADO_FINANCEIRO])
+		formatString: \R\$ #,##0
+		lineageTag: 079bb134-7c68-5348-bb0a-42adbdfd4c0c
+
+	measure 'IRPJ e CSLL' = SUM(fIndicador[IMPOSTO_LUCRO])
+		formatString: \R\$ #,##0
+		lineageTag: 0778ed47-8a73-54f3-9ef1-cc398f22a30b
+
+	measure 'Lucro líquido' = SUM(fIndicador[LUCRO_LIQUIDO])
+		formatString: \R\$ #,##0
+		lineageTag: 9eeba0f0-9bfc-574a-9d44-133bc01ff9b1
+
+	measure 'Margem líquida' = DIVIDE([Lucro líquido], [Receita líquida])
+		formatString: 0.0%
+		lineageTag: 224dd411-6a17-5003-a132-58fb775a42c1
+
+	measure 'Margem bruta' = DIVIDE([Lucro bruto], [Receita líquida])
+		formatString: 0.0%
+		lineageTag: a4a9285f-3b48-5e34-a0c1-e9108e9040df
+
+	measure Impostos = -(SUM(fIndicador[IMPOSTOS_RECEITA]) + SUM(fIndicador[IMPOSTO_LUCRO]))
+		formatString: \R\$ #,##0
+		lineageTag: 19e177a9-15ff-5cfa-bef5-69ca54666292
+
+	measure 'Carga tributária' = DIVIDE([Impostos], [Faturamento])
+		formatString: 0.0%
+		lineageTag: 78741eab-76f1-5d6c-8235-d2cbfb562b35
+
+	measure Disponível =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			RETURN CALCULATE(SUM(fIndicador[DISPONIVEL]), FILTER(ALL(dMes), dMes[COMPETENCIA] = m))
+		formatString: \R\$ #,##0
+		lineageTag: d1782689-1520-55cc-bd27-2dd9545f5736
+
+	measure 'Dívida bancária' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			RETURN CALCULATE(SUM(fIndicador[DIVIDA_BANCARIA]), FILTER(ALL(dMes), dMes[COMPETENCIA] = m))
+		formatString: \R\$ #,##0
+		lineageTag: 3a27fee5-b12b-5f40-bf3e-7810e79f2205
+
+	measure 'Liquidez corrente' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR f = FILTER(ALL(dMes), dMes[COMPETENCIA] = m)
+			RETURN DIVIDE(CALCULATE(SUM(fIndicador[ATIVO_CIRCULANTE]), f), CALCULATE(SUM(fIndicador[PASSIVO_CIRCULANTE]), f))
+		formatString: 0.00
+		lineageTag: 625b06ee-937d-56ad-9ab2-4dc13ec501e3
+
+	column CODIGO_CLIENTE
+		dataType: string
+		isHidden
+		lineageTag: c897f19a-501d-5924-b6aa-a5ccbdb2ad99
+		summarizeBy: none
+		sourceColumn: CODIGO_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column COMPETENCIA
+		dataType: dateTime
+		isHidden
+		formatString: dd/mm/yyyy
+		lineageTag: 74f988a3-8aca-5a47-99c2-039ae4a3a430
+		summarizeBy: none
+		sourceColumn: COMPETENCIA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column RECEITA_BRUTA
+		dataType: double
+		isHidden
+		lineageTag: 8db746c5-d60f-5df1-9aa8-c62e374b1a91
+		summarizeBy: none
+		sourceColumn: RECEITA_BRUTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column DEDUCOES
+		dataType: double
+		isHidden
+		lineageTag: 31e0a119-274e-5acc-bed7-77b42643442a
+		summarizeBy: none
+		sourceColumn: DEDUCOES
+
+		annotation SummarizationSetBy = Automatic
+
+	column IMPOSTOS_RECEITA
+		dataType: double
+		isHidden
+		lineageTag: e92a0c7f-7fdb-5643-a571-03c64d83014d
+		summarizeBy: none
+		sourceColumn: IMPOSTOS_RECEITA
+
+		annotation SummarizationSetBy = Automatic
+
+	column RECEITA_LIQUIDA
+		dataType: double
+		isHidden
+		lineageTag: 67f52d72-6a2d-57e3-b998-c29a2e468e07
+		summarizeBy: none
+		sourceColumn: RECEITA_LIQUIDA
+
+		annotation SummarizationSetBy = Automatic
+
+	column CUSTOS
+		dataType: double
+		isHidden
+		lineageTag: 5dab62a8-1ad1-5076-94c5-05ef7ab8bf39
+		summarizeBy: none
+		sourceColumn: CUSTOS
+
+		annotation SummarizationSetBy = Automatic
+
+	column LUCRO_BRUTO
+		dataType: double
+		isHidden
+		lineageTag: c2b098cd-12b9-56a3-8dc5-9466b74f3dea
+		summarizeBy: none
+		sourceColumn: LUCRO_BRUTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column DESPESAS_PESSOAL
+		dataType: double
+		isHidden
+		lineageTag: 53b025e8-2c47-576f-81b0-5f08fb5f9c83
+		summarizeBy: none
+		sourceColumn: DESPESAS_PESSOAL
+
+		annotation SummarizationSetBy = Automatic
+
+	column DESPESAS_ADMINISTRATIVAS
+		dataType: double
+		isHidden
+		lineageTag: 866915ee-c853-59cd-8d5e-b00a40ca4e19
+		summarizeBy: none
+		sourceColumn: DESPESAS_ADMINISTRATIVAS
+
+		annotation SummarizationSetBy = Automatic
+
+	column DEPRECIACAO
+		dataType: double
+		isHidden
+		lineageTag: 3989a360-0a79-585a-a69f-642fd867637a
+		summarizeBy: none
+		sourceColumn: DEPRECIACAO
+
+		annotation SummarizationSetBy = Automatic
+
+	column RESULTADO_OPERACIONAL
+		dataType: double
+		isHidden
+		lineageTag: 9ed8a8cd-530f-5aa1-a2a3-a43a559923f8
+		summarizeBy: none
+		sourceColumn: RESULTADO_OPERACIONAL
+
+		annotation SummarizationSetBy = Automatic
+
+	column RESULTADO_FINANCEIRO
+		dataType: double
+		isHidden
+		lineageTag: add0be2c-1bbb-508e-9710-3f39cddaa6e4
+		summarizeBy: none
+		sourceColumn: RESULTADO_FINANCEIRO
+
+		annotation SummarizationSetBy = Automatic
+
+	column IMPOSTO_LUCRO
+		dataType: double
+		isHidden
+		lineageTag: e5a0e7d1-d065-56b2-bf66-14ea7445bc0d
+		summarizeBy: none
+		sourceColumn: IMPOSTO_LUCRO
+
+		annotation SummarizationSetBy = Automatic
+
+	column LUCRO_LIQUIDO
+		dataType: double
+		isHidden
+		lineageTag: 09e49982-3238-51be-bf09-9960d3f030c7
+		summarizeBy: none
+		sourceColumn: LUCRO_LIQUIDO
+
+		annotation SummarizationSetBy = Automatic
+
+	column DISPONIVEL
+		dataType: double
+		isHidden
+		lineageTag: b8f483ad-1d43-5610-af23-ceaf77b9e864
+		summarizeBy: none
+		sourceColumn: DISPONIVEL
+
+		annotation SummarizationSetBy = Automatic
+
+	column CLIENTES_A_RECEBER
+		dataType: double
+		isHidden
+		lineageTag: 653816b3-1327-51bb-9ea2-bb444e41d6b4
+		summarizeBy: none
+		sourceColumn: CLIENTES_A_RECEBER
+
+		annotation SummarizationSetBy = Automatic
+
+	column ESTOQUES
+		dataType: double
+		isHidden
+		lineageTag: ef1247f4-4d2c-58e2-a5f3-56401d162b60
+		summarizeBy: none
+		sourceColumn: ESTOQUES
+
+		annotation SummarizationSetBy = Automatic
+
+	column ATIVO_CIRCULANTE
+		dataType: double
+		isHidden
+		lineageTag: f259e231-6d54-5ecb-ab8c-fe293a679bd7
+		summarizeBy: none
+		sourceColumn: ATIVO_CIRCULANTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column PASSIVO_CIRCULANTE
+		dataType: double
+		isHidden
+		lineageTag: 5bb7e440-2079-57fe-9ff3-16730ce6c929
+		summarizeBy: none
+		sourceColumn: PASSIVO_CIRCULANTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column DIVIDA_BANCARIA
+		dataType: double
+		isHidden
+		lineageTag: 38d26502-b9d2-5bd9-abd6-aa72bc0414fb
+		summarizeBy: none
+		sourceColumn: DIVIDA_BANCARIA
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fIndicador = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaExports & "indicadores_mensal.parquet")),
+				    Colunas = Table.SelectColumns(Fonte, {"CODIGO_CLIENTE", "COMPETENCIA", "RECEITA_BRUTA", "DEDUCOES", "IMPOSTOS_RECEITA", "RECEITA_LIQUIDA", "CUSTOS", "LUCRO_BRUTO", "DESPESAS_PESSOAL", "DESPESAS_ADMINISTRATIVAS", "DEPRECIACAO", "RESULTADO_OPERACIONAL", "RESULTADO_FINANCEIRO", "IMPOSTO_LUCRO", "LUCRO_LIQUIDO", "DISPONIVEL", "CLIENTES_A_RECEBER", "ESTOQUES", "ATIVO_CIRCULANTE", "PASSIVO_CIRCULANTE", "DIVIDA_BANCARIA"}),
+				    Tipos = Table.TransformColumnTypes(Colunas, {{"CODIGO_CLIENTE", type text}, {"COMPETENCIA", type date}, {"RECEITA_BRUTA", type number}, {"DEDUCOES", type number}, {"IMPOSTOS_RECEITA", type number}, {"RECEITA_LIQUIDA", type number}, {"CUSTOS", type number}, {"LUCRO_BRUTO", type number}, {"DESPESAS_PESSOAL", type number}, {"DESPESAS_ADMINISTRATIVAS", type number}, {"DEPRECIACAO", type number}, {"RESULTADO_OPERACIONAL", type number}, {"RESULTADO_FINANCEIRO", type number}, {"IMPOSTO_LUCRO", type number}, {"LUCRO_LIQUIDO", type number}, {"DISPONIVEL", type number}, {"CLIENTES_A_RECEBER", type number}, {"ESTOQUES", type number}, {"ATIVO_CIRCULANTE", type number}, {"PASSIVO_CIRCULANTE", type number}, {"DIVIDA_BANCARIA", type number}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table

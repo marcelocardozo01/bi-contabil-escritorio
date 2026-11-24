@@ -1,0 +1,78 @@
+table fCarteira
+	lineageTag: f8cbc620-27de-5bd0-af95-9037db188e63
+
+	column CODIGO_CLIENTE
+		dataType: string
+		isHidden
+		lineageTag: ee74305f-4b7d-58b1-b289-2581a833ce5f
+		summarizeBy: none
+		sourceColumn: CODIGO_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column SITUACAO
+		dataType: string
+		lineageTag: 1036aac0-359e-58a5-8b3b-184aa2f2f8b7
+		summarizeBy: none
+		sourceColumn: SITUACAO
+
+		annotation SummarizationSetBy = Automatic
+
+	column ALERTAS_CRITICOS
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e5d961ad-5333-588f-a724-f40aa19989ca
+		summarizeBy: none
+		sourceColumn: ALERTAS_CRITICOS
+
+		annotation SummarizationSetBy = Automatic
+
+	column ALERTAS_ATENCAO
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4c128543-e608-5899-88c6-afa16c3d19da
+		summarizeBy: none
+		sourceColumn: ALERTAS_ATENCAO
+
+		annotation SummarizationSetBy = Automatic
+
+	column RECEITA_BRUTA_12M
+		dataType: double
+		isHidden
+		lineageTag: d099934a-de9b-5782-99d4-8e15bde7491f
+		summarizeBy: none
+		sourceColumn: RECEITA_BRUTA_12M
+
+		annotation SummarizationSetBy = Automatic
+
+	column MARGEM_LIQUIDA_12M
+		dataType: double
+		isHidden
+		lineageTag: edbdd69c-da82-5797-8dd5-23ac572c4947
+		summarizeBy: none
+		sourceColumn: MARGEM_LIQUIDA_12M
+
+		annotation SummarizationSetBy = Automatic
+
+	column LIQUIDEZ_CORRENTE
+		dataType: double
+		isHidden
+		lineageTag: 70145866-472b-5f3e-8b72-2ac5cb97e76e
+		summarizeBy: none
+		sourceColumn: LIQUIDEZ_CORRENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fCarteira = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaExports & "an_carteira.parquet")),
+				    Colunas = Table.SelectColumns(Fonte, {"CODIGO_CLIENTE", "SITUACAO", "ALERTAS_CRITICOS", "ALERTAS_ATENCAO", "RECEITA_BRUTA_12M", "MARGEM_LIQUIDA_12M", "LIQUIDEZ_CORRENTE"}),
+				    Tipos = Table.TransformColumnTypes(Colunas, {{"CODIGO_CLIENTE", type text}, {"SITUACAO", type text}, {"ALERTAS_CRITICOS", Int64.Type}, {"ALERTAS_ATENCAO", Int64.Type}, {"RECEITA_BRUTA_12M", type number}, {"MARGEM_LIQUIDA_12M", type number}, {"LIQUIDEZ_CORRENTE", type number}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table

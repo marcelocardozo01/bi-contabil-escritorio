@@ -1,0 +1,24 @@
+relationship a232dd05-224e-596d-98d5-9840adc619ad
+	fromColumn: fIndicador.CODIGO_CLIENTE
+	toColumn: dCliente.CODIGO_CLIENTE
+
+relationship db82fe59-0fe5-577e-9045-6f99c48d604a
+	fromColumn: fIndicador.COMPETENCIA
+	toColumn: dMes.COMPETENCIA
+
+relationship 8606c8fe-539a-5876-a7f9-b1c4cae4b2f9
+	fromColumn: fCarteira.CODIGO_CLIENTE
+	toColumn: dCliente.CODIGO_CLIENTE
+
+relationship f5cbdd93-41ff-5a9e-abac-325a50c18788
+	fromColumn: fAlerta.CODIGO_CLIENTE
+	toColumn: dCliente.CODIGO_CLIENTE
+
+relationship 7d497d00-dd18-577d-9841-f518bdd53ba1
+	fromColumn: fSimples.CODIGO_CLIENTE
+	toColumn: dCliente.CODIGO_CLIENTE
+
+relationship b616efcb-f35e-58aa-83eb-8ec44db1a45f
+	fromColumn: fSimples.COMPETENCIA
+	toColumn: dMes.COMPETENCIA
+

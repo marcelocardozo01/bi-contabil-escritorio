@@ -1,0 +1,105 @@
+cultureInfo pt-BR
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "dcliente.regime": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dCliente",
+			          "ConceptualProperty": "REGIME"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Regime": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dcliente.responsavel": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dCliente",
+			          "ConceptualProperty": "RESPONSAVEL"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Responsável": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dcliente.cliente": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dCliente",
+			          "ConceptualProperty": "CLIENTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cliente": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dmes.mes_rotulo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dMes",
+			          "ConceptualProperty": "MES_ROTULO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Mês de referência": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Mês": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

@@ -1,0 +1,5 @@
+expression PastaExports = "C:\lastro-contabil\dados\exports\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: fc44d342-947d-5ddf-9d55-88032f341e53
+
+	annotation PBI_ResultType = Text
+
