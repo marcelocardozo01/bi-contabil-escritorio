@@ -1,0 +1,26 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainerMobileState/2.9.0/schema.json",
+  "position": {
+    "x": 8,
+    "y": 722,
+    "z": 4000,
+    "height": 250,
+    "width": 308,
+    "tabOrder": 4000
+  },
+  "objects": {
+    "compatibility": [
+      {
+        "properties": {
+          "legacyRendering": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

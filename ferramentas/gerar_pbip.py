@@ -301,6 +301,148 @@ MEDIDAS["Painel"] = [(n, None, linhas) for n, linhas in {
     "HTML Simples": simples(254),
     "HTML DRE": dre(622),
 }.items()]
+# ----------------------------------------------------------------------------
+# Blocos para o layout de celular: uma coluna, texto maior, sem altura fixa.
+# O Power BI nao mostra no celular um visual oculto no computador, entao estes
+# visuais existem tambem na pagina de computador, atras dos paineis grandes.
+# ----------------------------------------------------------------------------
+FONTE_M = f"font-family:Segoe UI,sans-serif;color:{C['tinta']};line-height:1.35;font-size:13px"
+CAIXA_M = f"{FONTE_M};{VIDRO};padding:12px 14px 10px"
+
+
+def titulo_m(titulo, sub):
+    return (f"<div style='{CAIXA_M}'><div style='font-size:15px;font-weight:700'>{titulo}</div>"
+            f"<div style='font-size:12px;color:{C['tinta2']};margin:1px 0 9px'>{sub}</div>")
+
+
+def m_cabecalho(titulo):
+    return ["VAR m = MAX(fIndicador[COMPETENCIA])",
+            'VAR quem = IF(HASONEVALUE(dCliente[CLIENTE]), SELECTEDVALUE(dCliente[CLIENTE]), FORMAT(DISTINCTCOUNT(fIndicador[CODIGO_CLIENTE]), "0") & " clientes")',
+            "RETURN",
+            "    " + j(s(f"<div style='{FONTE_M};padding:10px 14px 9px;background:linear-gradient(90deg,{C['painel2']},{C['fundo']} 80%);border-bottom:1px solid {C['linha']}'>"
+                         f"<div style='display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:{C['menta']}'>"
+                         f"<span style='width:12px;height:12px;border-radius:3px 3px 6px 6px;background:linear-gradient(160deg,#7FF0DC,{C['menta']})'></span>Lastro Contábil</div>"
+                         f"<div style='font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.2'>{titulo}</div><div style='font-size:12px;color:{C['tinta2']}'>"),
+                  "quem", s(", balancete de "), 'FORMAT(m, "mm/yyyy")', s("</div></div>"))]
+
+
+def m_cartoes(variaveis, specs):
+    blocos = []
+    for rot, val, apoio, ruim in specs:
+        cor_ = f'IF({ruim}, "{C["coral"]}", "{C["menta"]}")' if ruim else s(C["menta"])
+        tinta = f'IF({ruim}, "{C["coral"]}", "{C["tinta"]}")' if ruim else s(C["tinta"])
+        blocos.append(j(
+            s(f"<div style='{VIDRO};padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,"),
+            cor_, s(f",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:{C['tinta2']};{ELIP}'>{rot}</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;{ELIP};color:"),
+            tinta, s("'>"), val, s(f"</div><div style='font-size:11px;color:{C['tinta2']};{ELIP}'>"), apoio, s("</div></div>")))
+    return variaveis + ["RETURN", "    " + s(f"<div style='{FONTE_M};display:grid;grid-template-columns:1fr 1fr;gap:8px'>")] + ["    & " + b for b in blocos] + ["    & " + s("</div>")]
+
+
+def m_pauta():
+    alerta = lambda col: (f'VAR cod = fCarteira[CODIGO_CLIENTE] RETURN MAXX(TOPN(1, FILTER(fAlerta, fAlerta[CODIGO_CLIENTE] = cod && fAlerta[GRAVIDADE] = "Crítico"), '
+                          f'fAlerta[ORDEM], ASC), fAlerta[{col}])')
+    caso = j(s(f"<div style='border:1px solid rgba(255,107,94,.3);border-left:4px solid {C['coral']};border-radius:10px;padding:8px 11px;margin-bottom:7px;"
+               f"background:linear-gradient(90deg,rgba(255,107,94,.13),rgba(255,107,94,.02) 70%)'><b style='font-size:14px;font-weight:700'>"), "[@nome]",
+             s(f"</b><div style='font-size:11.5px;color:#FFC4BD;margin:1px 0 3px'>"),
+             '[@tit] & IF(fCarteira[ALERTAS_CRITICOS] > 1, " e mais " & FORMAT(fCarteira[ALERTAS_CRITICOS] - 1, "0"), "")',
+             s(f"</div><div style='font-size:12.5px;color:{C['tinta2']};line-height:1.35'>"), "[@txt]", s("</div></div>"))
+    return ['VAR t = ADDCOLUMNS(FILTER(fCarteira, fCarteira[SITUACAO] = "Crítico"), "@nome", RELATED(dCliente[CLIENTE]),',
+            f'    "@tit", {alerta("TITULO")},', f'    "@txt", {alerta("TEXTO")})',
+            "RETURN",
+            "    " + s(titulo_m("Pauta da semana", "Um caso por cliente crítico, com o primeiro ponto a tratar.")),
+            f'    & IF(COUNTROWS(t) = 0, {s("Nenhum cliente crítico neste recorte.")}, CONCATENATEX(t, {caso}, "", fCarteira[RECEITA_BRUTA_12M], DESC))',
+            "    & " + s("</div>")]
+
+
+def m_lista():
+    linha = j(s(f"<div style='display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid {C['linha']}'><div style='min-width:0'>"
+                f"<div style='font-size:13.5px;font-weight:600;{ELIP}'>"), "[@nome]", s(f"</div><div style='font-size:11.5px;color:{C['mudo']};{ELIP}'>"),
+              'IF(ISBLANK([@alerta]), [@ativ], [@alerta])', s("</div></div><div style='text-align:right;white-space:nowrap'><div>"), CHIP,
+              s(f"</div><div style='font-size:11.5px;color:{C['tinta2']};margin-top:3px'>"), BRL("fCarteira[RECEITA_BRUTA_12M]"), s(" · <span style='color:"),
+              f'IF(fCarteira[MARGEM_LIQUIDA_12M] < 0, "{C["coral"]}", "{C["tinta2"]}")', s("'>"), 'FORMAT(fCarteira[MARGEM_LIQUIDA_12M], "0.0%")', s("</span></div></div></div>"))
+    return ['VAR t = ADDCOLUMNS(fCarteira, "@nome", RELATED(dCliente[CLIENTE]), "@ativ", RELATED(dCliente[ATIVIDADE]),',
+            '    "@alerta", VAR cod = fCarteira[CODIGO_CLIENTE] RETURN MAXX(TOPN(1, FILTER(fAlerta, fAlerta[CODIGO_CLIENTE] = cod), fAlerta[ORDEM], ASC), fAlerta[TITULO]))',
+            "RETURN",
+            "    " + s(titulo_m("Todos os clientes", "Faturamento e margem dos últimos 12 meses.")),
+            f'    & CONCATENATEX(t, {linha}, "", SWITCH(fCarteira[SITUACAO], "Crítico", 0, "Atenção", 1, 2), ASC, fCarteira[RECEITA_BRUTA_12M], DESC)',
+            "    & " + s("</div>")]
+
+
+def m_alertas():
+    cor_ = f'IF(fAlerta[GRAVIDADE] = "Crítico", "{C["coral"]}", "{C["ambar"]}")'
+    fundo = 'IF(fAlerta[GRAVIDADE] = "Crítico", "rgba(255,107,94,.13)", "rgba(245,192,74,.12)")'
+    item = j(s("<div style='border-radius:10px;padding:8px 11px;margin-bottom:7px;border-left:4px solid "), cor_, s(";background:linear-gradient(90deg,"), fundo,
+             s(",rgba(0,0,0,0) 75%)'><div style='font-size:11.5px;font-weight:600;color:"), cor_, s("'>"),
+             'IF(fAlerta[GRAVIDADE] = "Crítico", "✕ Crítico", "! Atenção")', s("</div><div style='font-size:13.5px;font-weight:700'>"),
+             'IF(HASONEVALUE(dCliente[CLIENTE]), "", RELATED(dCliente[CLIENTE]) & ": ")', "fAlerta[TITULO]",
+             s(f"</div><div style='font-size:12.5px;color:{C['tinta2']};line-height:1.35;margin-top:2px'>"), "fAlerta[TEXTO]", s("</div></div>"))
+    return ["VAR n = COUNTROWS(fAlerta)", "RETURN",
+            "    " + s(titulo_m("O que conversar com o cliente", "Os pontos que o balancete levanta.")),
+            f'    & IF(n = 0, {s(f"<div style=\'border-left:4px solid {C["menta"]};border-radius:10px;padding:9px 11px;background:rgba(52,224,190,.1)\'><b>✓ Nenhum ponto de atenção neste balancete</b></div>")},',
+            f'        CONCATENATEX(TOPN(4, fAlerta, fAlerta[ORDEM], ASC, fAlerta[CODIGO_CLIENTE], ASC), {item}, "", fAlerta[ORDEM], ASC, fAlerta[CODIGO_CLIENTE], ASC))',
+            "    & " + s("</div>")]
+
+
+def m_cada_cem():
+    base = cada_cem(0)                                       # mesmas contas do bloco de computador
+    i = base.index("RETURN")
+    partes = [("imp", "Impostos e devoluções", C["lilas"], "#FFFFFF"), ("cus", "Mercadoria e serviço", C["menta2"], "#FFFFFF"), ("pes", "Pessoal", C["laranja"], "#FFFFFF"),
+              ("adm", "Despesas administrativas", C["ambar"], C["fundo"]), ("jur", "Juros e tarifas", C["rosa"], C["fundo"]), ("luc", "Lucro", C["menta"], C["fundo"])]
+    seg = lambda v, cor_, tinta: (f'IF({v} > 0, "<div style=\'flex:" & FORMAT(INT({v}), "0") & " 0 0;min-width:3px;border-radius:6px;background:{cor_};color:{tinta};font-size:11.5px;'
+                                  f'font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box\'>" & IF(DIVIDE({v}, rb) > 0.1, FORMAT(DIVIDE({v}, rb) * 100, "0"), "") & "</div>", "")')
+    leg = lambda v, nome, cor_: (f'IF({v} > 0, "<div style=\'display:flex;align-items:center;gap:8px;padding:3px 0\'><i style=\'width:10px;height:10px;border-radius:3px;background:{cor_}\'></i>{nome}'
+                                 f'<b style=\'margin-left:auto;color:{C["tinta"]}\'>R$ " & FORMAT(DIVIDE({v}, rb) * 100, "0.0") & "</b></div>", "")')
+    return base[:i] + ["RETURN", "    " + s(titulo_m("Para onde vai cada R$ 100 que entram", "Média do último trimestre.") + "<div style='display:flex;gap:2px;height:32px;margin-bottom:10px'>")] \
+        + ["    & " + seg(v, c_, t_) for v, _, c_, t_ in partes] + ["    & " + s(f"</div><div style='font-size:12.5px;color:{C['tinta2']}'>")] \
+        + ["    & " + leg(v, n_, c_) for v, n_, c_, _ in partes] + ["    & " + s("</div></div>")]
+
+
+def m_simples():
+    base = simples(0)
+    return [l.replace(f"padding:14px 18px 10px;height:0px;overflow:hidden", "padding:12px 14px 10px") for l in base]
+
+
+def m_dre():
+    linhas = [("Receita bruta", "[Faturamento]", 0), ("(-) Impostos e devoluções", "[Impostos e devoluções]", 0), ("Receita líquida", "[Receita líquida]", 1),
+              ("(-) Custo", "[Custo total]", 0), ("Lucro bruto", "[Lucro bruto]", 1), ("(-) Pessoal", "[Despesas com pessoal]", 0),
+              ("(-) Administrativas", "[Despesas administrativas]", 0), ("(-) Depreciação", "[Despesa de depreciação]", 0), ("Resultado operacional", "[Resultado operacional]", 1),
+              ("Resultado financeiro", "[Resultado financeiro]", 0), ("(-) IRPJ e CSLL", "[IRPJ e CSLL]", 0), ("Lucro líquido", "[Lucro líquido]", 1)]
+    grade = "1.5fr 1fr 1fr"
+    cel = lambda med, f_: (f'VAR x = CALCULATE({med}, {f_}) RETURN "<div style=\'text-align:right;color:" & IF(x < 0, "{C["coral"]}", "{C["tinta"]}") & "\'>" & '
+                           f'IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>"')
+    out = JANELAS + ["RETURN", "    " + j(s(titulo_m("Resultado do mês", "Demonstração de resultado resumida.")
+                                            + f"<div style='display:grid;grid-template-columns:{grade};gap:8px;font-size:11.5px;color:{C['mudo']};padding-bottom:5px;border-bottom:1px solid {C['menta2']}'>"
+                                              "<div>Em reais</div><div style='text-align:right'>"), 'FORMAT(m, "mm/yyyy")', s("</div><div style='text-align:right'>12 meses</div></div>"))]
+    for rot, med, total in linhas:
+        peso = "font-weight:700;" if total else ""
+        out.append("    & " + s(f"<div style='display:grid;grid-template-columns:{grade};gap:8px;font-size:12.5px;{peso}padding:7px 0;border-bottom:1px solid {C['menta2'] if total else C['linha']}'><div>{rot}</div>"))
+        out += [f"    & ({cel(med, 'fM')})", f"    & ({cel(med, 'f12')})", "    & " + s("</div>")]
+    return out + ["    & " + s("</div>")]
+
+
+MEDIDAS["Painel"] += [(n, None, linhas) for n, linhas in {
+    "HTML M Cabeçalho Carteira": m_cabecalho("Carteira de clientes"),
+    "HTML M Cabeçalho Cliente": m_cabecalho("Painel do cliente"),
+    "HTML M Cabeçalho Resultado": m_cabecalho("Resultado e caixa"),
+    "HTML M Cartões Carteira": m_cartoes(V_CART, [
+        ("Conversa agora", 'FORMAT(nc, "0")', s("clientes críticos"), "nc > 0"),
+        ("Para acompanhar", 'FORMAT(na, "0")', s("em atenção"), None),
+        ("Em dia", 'FORMAT(nd, "0")', s("sem alerta"), None),
+        ("Balancetes atrasados", 'FORMAT(atr, "0")', s("painel desatualizado"), "atr > 0")]),
+    "HTML M Pauta": m_pauta(),
+    "HTML M Lista": m_lista(),
+    "HTML M Cartões Cliente": m_cartoes(V_CLI, [
+        ("Faturamento do mês", BRL("fat"), 'IF(ISBLANK(fatAA), "primeiro ano", FORMAT(DIVIDE(fat, fatAA) - 1, "+0.0%;-0.0%") & " em um ano")', None),
+        ("Lucro do mês", BRL("luc"), BRL("luc3") + ' & " no trimestre"', "luc < 0"),
+        ("Sobra de cada R$ 100", '"R$ " & FORMAT(mar3 * 100, "0.0")', s("margem do trimestre"), "mar3 < 0"),
+        ("Dinheiro disponível", BRL("disp"), s("caixa e aplicações"), None),
+        ("Para cada R$ 1 a pagar", '"R$ " & FORMAT(liq, "0.00")', s("caixa, a receber e estoque"), "liq < 1"),
+        ("Impostos", 'FORMAT(carga, "0.0%")', s("do faturamento do mês"), None)]),
+    "HTML M Alertas": m_alertas(),
+    "HTML M Cada 100": m_cada_cem(),
+    "HTML M Simples": m_simples(),
+    "HTML M DRE": m_dre(),
+}.items()]
 TABELA_DA_MEDIDA = {m[0]: t for t, ms in MEDIDAS.items() for m in ms}
 
 H = "html"
@@ -323,6 +465,28 @@ PAGINAS = [
         ("clusteredColumnChart", 788, 82, 476, 300, "Margem líquida por mês", {"Category": ["dMes.MES_ROTULO|Mês"], "Y": ["Margem líquida"]}),
         ("lineChart", 788, 394, 476, 310, "Dinheiro disponível e dívida bancária", {"Category": ["dMes.MES_ROTULO|Mês"], "Y": ["Disponível", "Dívida bancária"]})]),
 ]
+
+
+# Visuais so de celular: na pagina de computador ficam atras dos paineis grandes (z baixo).
+HM = "html_m"
+PAGINAS[0][2].extend([(HM, 40, 300 + 20 * k, 260, 120, None, n) for k, n in enumerate(
+    ["HTML M Cabeçalho Carteira", "HTML M Cartões Carteira", "HTML M Pauta", "HTML M Lista"])])
+PAGINAS[1][2].extend([(HM, 40, 250 + 20 * k, 260, 100, None, n) for k, n in enumerate(
+    ["HTML M Cabeçalho Cliente", "HTML M Cartões Cliente", "HTML M Alertas", "HTML M Cada 100", "HTML M Simples"])])
+PAGINAS[2][2].extend([(HM, 40, 200 + 20 * k, 260, 120, None, n) for k, n in enumerate(["HTML M Cabeçalho Resultado", "HTML M DRE"])])
+
+# Layout de celular: chave do visual -> (x, y, largura, altura), numa tela de 324 de largura que rola para baixo.
+# A chave e a medida (blocos HTML), o campo (segmentacao) ou o titulo (grafico nativo).
+MOVEL = {
+    "carteira": {"HTML M Cabeçalho Carteira": (0, 0, 324, 74), "dCliente.RESPONSAVEL|Responsável": (8, 80, 150, 62), "dCliente.REGIME|Regime": (166, 80, 150, 62),
+                 "HTML M Cartões Carteira": (8, 150, 308, 150), "HTML M Pauta": (8, 308, 308, 760), "HTML M Lista": (8, 1076, 308, 1130)},
+    "cliente": {"HTML M Cabeçalho Cliente": (0, 0, 324, 74), "dCliente.CLIENTE|Cliente": (8, 80, 308, 62),
+                "HTML M Cartões Cliente": (8, 150, 308, 226), "HTML M Alertas": (8, 384, 308, 330), "HTML M Cada 100": (8, 722, 308, 250),
+                "Faturamento e lucro, mês a mês": (8, 980, 308, 220), "HTML M Simples": (8, 1208, 308, 250)},
+    "resultado": {"HTML M Cabeçalho Resultado": (0, 0, 324, 74), "dCliente.CLIENTE|Cliente": (8, 80, 308, 62),
+                  "HTML M DRE": (8, 150, 308, 500), "Margem líquida por mês": (8, 658, 308, 220), "Dinheiro disponível e dívida bancária": (8, 886, 308, 230)},
+}
+ESQUEMA_MOVEL = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainerMobileState/2.5.0/schema.json"
 
 
 # ----------------------------------------------------------------------------
@@ -440,6 +604,10 @@ def visual(pag, i, spec):
     nome = hashlib.sha1(f"{pag}/{i}/{tipo}/{papeis}".encode()).hexdigest()[:20]
     objs = {}
     cont = {"title": [{"properties": {"show": lit("true"), "text": lit("'" + titulo.replace("'", "''") + "'")} if titulo else {"show": lit("false")}}]}
+    chave = papeis if isinstance(papeis, str) else (titulo or list(papeis.values())[0][0])
+    z = (i + 1) * 1000
+    if tipo == "html_m":                                     # bloco de celular: no computador fica atras dos paineis
+        tipo, z = "html", 10 + i
     if tipo == "html":
         tipo = VISUAL_HTML
         query = {"queryState": {"content": {"projections": [campo(papeis)]}}}
@@ -460,8 +628,8 @@ def visual(pag, i, spec):
         elif tipo == "lineChart":
             objs = {"legend": [{"properties": {"show": lit("true"), "position": lit("'Top'"), "labelColor": cor(C["tinta2"])}}]}
     return nome, {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-                  "name": nome, "position": {"x": x, "y": y, "z": (i + 1) * 1000, "height": h, "width": w, "tabOrder": (i + 1) * 1000},
-                  "visual": {"visualType": tipo, "query": query, "objects": objs, "visualContainerObjects": cont, "drillFilterOtherVisuals": True}}
+                  "name": nome, "position": {"x": x, "y": y, "z": z, "height": h, "width": w, "tabOrder": z},
+                  "visual": {"visualType": tipo, "query": query, "objects": objs, "visualContainerObjects": cont, "drillFilterOtherVisuals": True}}, chave
 
 
 def eixo():
@@ -523,8 +691,14 @@ def relatorio():
                                  "name": pid, "displayName": titulo, "displayOption": "FitToPage", "height": 720, "width": 1280,
                                  "objects": {k: [{"properties": {"color": cor(C["fundo"]), "transparency": lit("0D")}}] for k in ("background", "outspace")}})
         for i, spec in enumerate(visuais):
-            nome, obj = visual(pid, i, spec)
+            nome, obj, chave = visual(pid, i, spec)
             js(pasta / "visuals" / nome / "visual.json", obj)
+            if chave in MOVEL.get(pid, {}):                   # posicao deste visual no layout de celular
+                mx, my, mw, mh = MOVEL[pid][chave]
+                ordem = list(MOVEL[pid]).index(chave) * 1000
+                js(pasta / "visuals" / nome / "mobile.json", {"$schema": ESQUEMA_MOVEL,
+                                                               "position": {"x": mx, "y": my, "z": ordem, "height": mh, "width": mw, "tabOrder": ordem}})
+    print(f"layout de celular: {sum(len(v) for v in MOVEL.values())} visuais posicionados em {len(MOVEL)} paginas")
     print(f"{NOME}: {len(TABELAS) + 1} tabelas, {sum(len(m) for m in MEDIDAS.values())} medidas, {len(PAGINAS)} paginas, {sum(len(p[2]) for p in PAGINAS)} visuais")
 
 

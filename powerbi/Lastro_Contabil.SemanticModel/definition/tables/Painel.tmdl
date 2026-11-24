@@ -231,6 +231,207 @@ table Painel
 			    & "</div>"
 		lineageTag: fd7aa192-30cb-51fc-945a-4fe88e0f0e04
 
+	measure 'HTML M Cabeçalho Carteira' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR quem = IF(HASONEVALUE(dCliente[CLIENTE]), SELECTEDVALUE(dCliente[CLIENTE]), FORMAT(DISTINCTCOUNT(fIndicador[CODIGO_CLIENTE]), "0") & " clientes")
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;padding:10px 14px 9px;background:linear-gradient(90deg,#123A3B,#061A1C 80%);border-bottom:1px solid #1B4A49'><div style='display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#34E0BE'><span style='width:12px;height:12px;border-radius:3px 3px 6px 6px;background:linear-gradient(160deg,#7FF0DC,#34E0BE)'></span>Lastro Contábil</div><div style='font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.2'>Carteira de clientes</div><div style='font-size:12px;color:#A9C6C2'>" & quem & ", balancete de " & FORMAT(m, "mm/yyyy") & "</div></div>"
+		lineageTag: 77f1c093-a723-5766-8bae-41177fd858d5
+
+	measure 'HTML M Cabeçalho Cliente' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR quem = IF(HASONEVALUE(dCliente[CLIENTE]), SELECTEDVALUE(dCliente[CLIENTE]), FORMAT(DISTINCTCOUNT(fIndicador[CODIGO_CLIENTE]), "0") & " clientes")
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;padding:10px 14px 9px;background:linear-gradient(90deg,#123A3B,#061A1C 80%);border-bottom:1px solid #1B4A49'><div style='display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#34E0BE'><span style='width:12px;height:12px;border-radius:3px 3px 6px 6px;background:linear-gradient(160deg,#7FF0DC,#34E0BE)'></span>Lastro Contábil</div><div style='font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.2'>Painel do cliente</div><div style='font-size:12px;color:#A9C6C2'>" & quem & ", balancete de " & FORMAT(m, "mm/yyyy") & "</div></div>"
+		lineageTag: 07a41e58-c88c-5033-9fac-0a17bcdf54bb
+
+	measure 'HTML M Cabeçalho Resultado' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR quem = IF(HASONEVALUE(dCliente[CLIENTE]), SELECTEDVALUE(dCliente[CLIENTE]), FORMAT(DISTINCTCOUNT(fIndicador[CODIGO_CLIENTE]), "0") & " clientes")
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;padding:10px 14px 9px;background:linear-gradient(90deg,#123A3B,#061A1C 80%);border-bottom:1px solid #1B4A49'><div style='display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#34E0BE'><span style='width:12px;height:12px;border-radius:3px 3px 6px 6px;background:linear-gradient(160deg,#7FF0DC,#34E0BE)'></span>Lastro Contábil</div><div style='font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.2'>Resultado e caixa</div><div style='font-size:12px;color:#A9C6C2'>" & quem & ", balancete de " & FORMAT(m, "mm/yyyy") & "</div></div>"
+		lineageTag: 8ed1fa49-8aa7-5d3a-9f37-6c0b49036369
+
+	measure 'HTML M Cartões Carteira' =
+			VAR nc = CALCULATE(COUNTROWS(fCarteira), fCarteira[SITUACAO] = "Crítico") + 0
+			VAR na = CALCULATE(COUNTROWS(fCarteira), fCarteira[SITUACAO] = "Atenção") + 0
+			VAR nd = CALCULATE(COUNTROWS(fCarteira), fCarteira[SITUACAO] = "Em dia") + 0
+			VAR atr = CALCULATE(COUNTROWS(dCliente), dCliente[MESES_ATRASO] > 0) + 0
+			VAR fat = SUM(fCarteira[RECEITA_BRUTA_12M])
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px'>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & IF(nc > 0, "#FF6B5E", "#34E0BE") & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Conversa agora</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & IF(nc > 0, "#FF6B5E", "#F4FBFA") & "'>" & FORMAT(nc, "0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "clientes críticos" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & "#34E0BE" & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Para acompanhar</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & "#F4FBFA" & "'>" & FORMAT(na, "0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "em atenção" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & "#34E0BE" & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Em dia</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & "#F4FBFA" & "'>" & FORMAT(nd, "0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "sem alerta" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & IF(atr > 0, "#FF6B5E", "#34E0BE") & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Balancetes atrasados</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & IF(atr > 0, "#FF6B5E", "#F4FBFA") & "'>" & FORMAT(atr, "0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "painel desatualizado" & "</div></div>"
+			    & "</div>"
+		lineageTag: 2f81592a-154a-5588-b35d-acf7f67db07e
+
+	measure 'HTML M Pauta' =
+			VAR t = ADDCOLUMNS(FILTER(fCarteira, fCarteira[SITUACAO] = "Crítico"), "@nome", RELATED(dCliente[CLIENTE]),
+			    "@tit", VAR cod = fCarteira[CODIGO_CLIENTE] RETURN MAXX(TOPN(1, FILTER(fAlerta, fAlerta[CODIGO_CLIENTE] = cod && fAlerta[GRAVIDADE] = "Crítico"), fAlerta[ORDEM], ASC), fAlerta[TITULO]),
+			    "@txt", VAR cod = fCarteira[CODIGO_CLIENTE] RETURN MAXX(TOPN(1, FILTER(fAlerta, fAlerta[CODIGO_CLIENTE] = cod && fAlerta[GRAVIDADE] = "Crítico"), fAlerta[ORDEM], ASC), fAlerta[TEXTO]))
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:12px 14px 10px'><div style='font-size:15px;font-weight:700'>Pauta da semana</div><div style='font-size:12px;color:#A9C6C2;margin:1px 0 9px'>Um caso por cliente crítico, com o primeiro ponto a tratar.</div>"
+			    & IF(COUNTROWS(t) = 0, "Nenhum cliente crítico neste recorte.", CONCATENATEX(t, "<div style='border:1px solid rgba(255,107,94,.3);border-left:4px solid #FF6B5E;border-radius:10px;padding:8px 11px;margin-bottom:7px;background:linear-gradient(90deg,rgba(255,107,94,.13),rgba(255,107,94,.02) 70%)'><b style='font-size:14px;font-weight:700'>" & [@nome] & "</b><div style='font-size:11.5px;color:#FFC4BD;margin:1px 0 3px'>" & [@tit] & IF(fCarteira[ALERTAS_CRITICOS] > 1, " e mais " & FORMAT(fCarteira[ALERTAS_CRITICOS] - 1, "0"), "") & "</div><div style='font-size:12.5px;color:#A9C6C2;line-height:1.35'>" & [@txt] & "</div></div>", "", fCarteira[RECEITA_BRUTA_12M], DESC))
+			    & "</div>"
+		lineageTag: 439e5829-b260-5cab-beb5-daf08c0c0473
+
+	measure 'HTML M Lista' =
+			VAR t = ADDCOLUMNS(fCarteira, "@nome", RELATED(dCliente[CLIENTE]), "@ativ", RELATED(dCliente[ATIVIDADE]),
+			    "@alerta", VAR cod = fCarteira[CODIGO_CLIENTE] RETURN MAXX(TOPN(1, FILTER(fAlerta, fAlerta[CODIGO_CLIENTE] = cod), fAlerta[ORDEM], ASC), fAlerta[TITULO]))
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:12px 14px 10px'><div style='font-size:15px;font-weight:700'>Todos os clientes</div><div style='font-size:12px;color:#A9C6C2;margin:1px 0 9px'>Faturamento e margem dos últimos 12 meses.</div>"
+			    & CONCATENATEX(t, "<div style='display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #1B4A49'><div style='min-width:0'><div style='font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & [@nome] & "</div><div style='font-size:11.5px;color:#7A9A96;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & IF(ISBLANK([@alerta]), [@ativ], [@alerta]) & "</div></div><div style='text-align:right;white-space:nowrap'><div>" & "<span style='display:inline-block;font-size:10px;font-weight:600;border-radius:99px;padding:0 7px;line-height:13px;border:1px solid " & SWITCH(fCarteira[SITUACAO], "Crítico", "#FF6B5E;color:#FF6B5E", "Atenção", "#F5C04A;color:#F5C04A", "#34E0BE;color:#34E0BE") & "'>" & SWITCH(fCarteira[SITUACAO], "Crítico", "✕ ", "Atenção", "! ", "✓ ") & fCarteira[SITUACAO] & "</span>" & "</div><div style='font-size:11.5px;color:#A9C6C2;margin-top:3px'>" & "R$ " & FORMAT(fCarteira[RECEITA_BRUTA_12M], "#,##0") & " · <span style='color:" & IF(fCarteira[MARGEM_LIQUIDA_12M] < 0, "#FF6B5E", "#A9C6C2") & "'>" & FORMAT(fCarteira[MARGEM_LIQUIDA_12M], "0.0%") & "</span></div></div></div>", "", SWITCH(fCarteira[SITUACAO], "Crítico", 0, "Atenção", 1, 2), ASC, fCarteira[RECEITA_BRUTA_12M], DESC)
+			    & "</div>"
+		lineageTag: 9e10df59-f203-5af7-80da-c8872bda96de
+
+	measure 'HTML M Cartões Cliente' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR fM = FILTER(ALL(dMes), dMes[COMPETENCIA] = m)
+			VAR fAnt = FILTER(ALL(dMes), dMes[COMPETENCIA] = EDATE(m, -1))
+			VAR fAA = FILTER(ALL(dMes), dMes[COMPETENCIA] = EDATE(m, -12))
+			VAR f3 = FILTER(ALL(dMes), dMes[COMPETENCIA] > EDATE(m, -3) && dMes[COMPETENCIA] <= m)
+			VAR f12 = FILTER(ALL(dMes), dMes[COMPETENCIA] > EDATE(m, -12) && dMes[COMPETENCIA] <= m)
+			VAR fat = CALCULATE([Faturamento], fM)
+			VAR fatAA = CALCULATE([Faturamento], fAA)
+			VAR luc = CALCULATE([Lucro líquido], fM)
+			VAR luc3 = CALCULATE([Lucro líquido], f3)
+			VAR mar3 = CALCULATE([Margem líquida], f3)
+			VAR disp = [Disponível]
+			VAR liq = [Liquidez corrente]
+			VAR carga = CALCULATE([Carga tributária], fM)
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px'>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & "#34E0BE" & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Faturamento do mês</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & "#F4FBFA" & "'>" & "R$ " & FORMAT(fat, "#,##0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & IF(ISBLANK(fatAA), "primeiro ano", FORMAT(DIVIDE(fat, fatAA) - 1, "+0.0%;-0.0%") & " em um ano") & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & IF(luc < 0, "#FF6B5E", "#34E0BE") & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Lucro do mês</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & IF(luc < 0, "#FF6B5E", "#F4FBFA") & "'>" & "R$ " & FORMAT(luc, "#,##0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "R$ " & FORMAT(luc3, "#,##0") & " no trimestre" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & IF(mar3 < 0, "#FF6B5E", "#34E0BE") & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Sobra de cada R$ 100</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & IF(mar3 < 0, "#FF6B5E", "#F4FBFA") & "'>" & "R$ " & FORMAT(mar3 * 100, "0.0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "margem do trimestre" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & "#34E0BE" & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Dinheiro disponível</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & "#F4FBFA" & "'>" & "R$ " & FORMAT(disp, "#,##0") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "caixa e aplicações" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & IF(liq < 1, "#FF6B5E", "#34E0BE") & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Para cada R$ 1 a pagar</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & IF(liq < 1, "#FF6B5E", "#F4FBFA") & "'>" & "R$ " & FORMAT(liq, "0.00") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "caixa, a receber e estoque" & "</div></div>"
+			    & "<div style='background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:10px 12px 9px;position:relative;overflow:hidden;min-width:0'><div style='position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg," & "#34E0BE" & ",rgba(0,0,0,0))'></div><div style='font-size:11.5px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>Impostos</div><div style='font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:" & "#F4FBFA" & "'>" & FORMAT(carga, "0.0%") & "</div><div style='font-size:11px;color:#A9C6C2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & "do faturamento do mês" & "</div></div>"
+			    & "</div>"
+		lineageTag: 63ff7ae5-33c1-50f6-9787-b42fc49f3294
+
+	measure 'HTML M Alertas' =
+			VAR n = COUNTROWS(fAlerta)
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:12px 14px 10px'><div style='font-size:15px;font-weight:700'>O que conversar com o cliente</div><div style='font-size:12px;color:#A9C6C2;margin:1px 0 9px'>Os pontos que o balancete levanta.</div>"
+			    & IF(n = 0, "<div style='border-left:4px solid #34E0BE;border-radius:10px;padding:9px 11px;background:rgba(52,224,190,.1)'><b>✓ Nenhum ponto de atenção neste balancete</b></div>",
+			        CONCATENATEX(TOPN(4, fAlerta, fAlerta[ORDEM], ASC, fAlerta[CODIGO_CLIENTE], ASC), "<div style='border-radius:10px;padding:8px 11px;margin-bottom:7px;border-left:4px solid " & IF(fAlerta[GRAVIDADE] = "Crítico", "#FF6B5E", "#F5C04A") & ";background:linear-gradient(90deg," & IF(fAlerta[GRAVIDADE] = "Crítico", "rgba(255,107,94,.13)", "rgba(245,192,74,.12)") & ",rgba(0,0,0,0) 75%)'><div style='font-size:11.5px;font-weight:600;color:" & IF(fAlerta[GRAVIDADE] = "Crítico", "#FF6B5E", "#F5C04A") & "'>" & IF(fAlerta[GRAVIDADE] = "Crítico", "✕ Crítico", "! Atenção") & "</div><div style='font-size:13.5px;font-weight:700'>" & IF(HASONEVALUE(dCliente[CLIENTE]), "", RELATED(dCliente[CLIENTE]) & ": ") & fAlerta[TITULO] & "</div><div style='font-size:12.5px;color:#A9C6C2;line-height:1.35;margin-top:2px'>" & fAlerta[TEXTO] & "</div></div>", "", fAlerta[ORDEM], ASC, fAlerta[CODIGO_CLIENTE], ASC))
+			    & "</div>"
+		lineageTag: 7d59a802-172d-525f-8e35-c6917d8643d4
+
+	measure 'HTML M Cada 100' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR fM = FILTER(ALL(dMes), dMes[COMPETENCIA] = m)
+			VAR fAnt = FILTER(ALL(dMes), dMes[COMPETENCIA] = EDATE(m, -1))
+			VAR fAA = FILTER(ALL(dMes), dMes[COMPETENCIA] = EDATE(m, -12))
+			VAR f3 = FILTER(ALL(dMes), dMes[COMPETENCIA] > EDATE(m, -3) && dMes[COMPETENCIA] <= m)
+			VAR f12 = FILTER(ALL(dMes), dMes[COMPETENCIA] > EDATE(m, -12) && dMes[COMPETENCIA] <= m)
+			VAR rb = CALCULATE([Faturamento], f3)
+			VAR imp = -CALCULATE(SUM(fIndicador[DEDUCOES]) + SUM(fIndicador[IMPOSTO_LUCRO]), f3)
+			VAR cus = -CALCULATE([Custo total], f3)
+			VAR pes = -CALCULATE([Despesas com pessoal], f3)
+			VAR adm = -CALCULATE([Despesas administrativas] + [Despesa de depreciação], f3)
+			VAR jur = -CALCULATE([Resultado financeiro], f3)
+			VAR luc = CALCULATE([Lucro líquido], f3)
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:12px 14px 10px'><div style='font-size:15px;font-weight:700'>Para onde vai cada R$ 100 que entram</div><div style='font-size:12px;color:#A9C6C2;margin:1px 0 9px'>Média do último trimestre.</div><div style='display:flex;gap:2px;height:32px;margin-bottom:10px'>"
+			    & IF(imp > 0, "<div style='flex:" & FORMAT(INT(imp), "0") & " 0 0;min-width:3px;border-radius:6px;background:#9B8CF2;color:#FFFFFF;font-size:11.5px;font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box'>" & IF(DIVIDE(imp, rb) > 0.1, FORMAT(DIVIDE(imp, rb) * 100, "0"), "") & "</div>", "")
+			    & IF(cus > 0, "<div style='flex:" & FORMAT(INT(cus), "0") & " 0 0;min-width:3px;border-radius:6px;background:#1F6F66;color:#FFFFFF;font-size:11.5px;font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box'>" & IF(DIVIDE(cus, rb) > 0.1, FORMAT(DIVIDE(cus, rb) * 100, "0"), "") & "</div>", "")
+			    & IF(pes > 0, "<div style='flex:" & FORMAT(INT(pes), "0") & " 0 0;min-width:3px;border-radius:6px;background:#FF8A65;color:#FFFFFF;font-size:11.5px;font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box'>" & IF(DIVIDE(pes, rb) > 0.1, FORMAT(DIVIDE(pes, rb) * 100, "0"), "") & "</div>", "")
+			    & IF(adm > 0, "<div style='flex:" & FORMAT(INT(adm), "0") & " 0 0;min-width:3px;border-radius:6px;background:#F5C04A;color:#061A1C;font-size:11.5px;font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box'>" & IF(DIVIDE(adm, rb) > 0.1, FORMAT(DIVIDE(adm, rb) * 100, "0"), "") & "</div>", "")
+			    & IF(jur > 0, "<div style='flex:" & FORMAT(INT(jur), "0") & " 0 0;min-width:3px;border-radius:6px;background:#F78FB3;color:#061A1C;font-size:11.5px;font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box'>" & IF(DIVIDE(jur, rb) > 0.1, FORMAT(DIVIDE(jur, rb) * 100, "0"), "") & "</div>", "")
+			    & IF(luc > 0, "<div style='flex:" & FORMAT(INT(luc), "0") & " 0 0;min-width:3px;border-radius:6px;background:#34E0BE;color:#061A1C;font-size:11.5px;font-weight:700;padding:7px 5px;white-space:nowrap;overflow:hidden;box-sizing:border-box'>" & IF(DIVIDE(luc, rb) > 0.1, FORMAT(DIVIDE(luc, rb) * 100, "0"), "") & "</div>", "")
+			    & "</div><div style='font-size:12.5px;color:#A9C6C2'>"
+			    & IF(imp > 0, "<div style='display:flex;align-items:center;gap:8px;padding:3px 0'><i style='width:10px;height:10px;border-radius:3px;background:#9B8CF2'></i>Impostos e devoluções<b style='margin-left:auto;color:#F4FBFA'>R$ " & FORMAT(DIVIDE(imp, rb) * 100, "0.0") & "</b></div>", "")
+			    & IF(cus > 0, "<div style='display:flex;align-items:center;gap:8px;padding:3px 0'><i style='width:10px;height:10px;border-radius:3px;background:#1F6F66'></i>Mercadoria e serviço<b style='margin-left:auto;color:#F4FBFA'>R$ " & FORMAT(DIVIDE(cus, rb) * 100, "0.0") & "</b></div>", "")
+			    & IF(pes > 0, "<div style='display:flex;align-items:center;gap:8px;padding:3px 0'><i style='width:10px;height:10px;border-radius:3px;background:#FF8A65'></i>Pessoal<b style='margin-left:auto;color:#F4FBFA'>R$ " & FORMAT(DIVIDE(pes, rb) * 100, "0.0") & "</b></div>", "")
+			    & IF(adm > 0, "<div style='display:flex;align-items:center;gap:8px;padding:3px 0'><i style='width:10px;height:10px;border-radius:3px;background:#F5C04A'></i>Despesas administrativas<b style='margin-left:auto;color:#F4FBFA'>R$ " & FORMAT(DIVIDE(adm, rb) * 100, "0.0") & "</b></div>", "")
+			    & IF(jur > 0, "<div style='display:flex;align-items:center;gap:8px;padding:3px 0'><i style='width:10px;height:10px;border-radius:3px;background:#F78FB3'></i>Juros e tarifas<b style='margin-left:auto;color:#F4FBFA'>R$ " & FORMAT(DIVIDE(jur, rb) * 100, "0.0") & "</b></div>", "")
+			    & IF(luc > 0, "<div style='display:flex;align-items:center;gap:8px;padding:3px 0'><i style='width:10px;height:10px;border-radius:3px;background:#34E0BE'></i>Lucro<b style='margin-left:auto;color:#F4FBFA'>R$ " & FORMAT(DIVIDE(luc, rb) * 100, "0.0") & "</b></div>", "")
+			    & "</div></div>"
+		lineageTag: 9b2f012a-b504-530f-8281-bd0738313a85
+
+	measure 'HTML M Simples' =
+			VAR um = HASONEVALUE(dCliente[CODIGO_CLIENTE])
+			VAR ms = MAX(fSimples[COMPETENCIA])
+			VAR f = FILTER(ALL(dMes), dMes[COMPETENCIA] = ms)
+			VAR rbt = CALCULATE(MAX(fSimples[RBT12]), f)
+			VAR faixa = CALCULATE(MAX(fSimples[FAIXA]), f)
+			VAR usoF = CALCULATE(MAX(fSimples[USO_FAIXA]), f)
+			VAR usoL = CALCULATE(MAX(fSimples[USO_LIMITE_SIMPLES]), f)
+			VAR folga = CALCULATE(MAX(fSimples[FOLGA_FAIXA]), f)
+			VAR lim = CALCULATE(MAX(fSimples[LIMITE_SIMPLES]), f)
+			VAR aliq = CALCULATE(MAX(fSimples[ALIQUOTA_EFETIVA]), f)
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:12px 14px 10px'><div style='font-size:15px;font-weight:700'>Simples Nacional</div><div style='font-size:12px;color:#A9C6C2;margin:1px 0 10px'>A faixa depende do faturamento dos últimos 12 meses.</div>"
+			    & IF(NOT um, "<div style='font-size:12.5px;color:#A9C6C2'>Selecione um cliente para ver a faixa do Simples.</div>",
+			        IF(ISBLANK(rbt), "<div style='font-size:12.5px;color:#A9C6C2'>Este cliente não está no Simples Nacional.</div>",
+			            "<div style='display:flex;justify-content:space-between;font-size:12.5px;margin-top:7px'><span style='color:#A9C6C2'>Faturamento de 12 meses</span><b>" & "R$ " & FORMAT(rbt, "#,##0") & "</b></div>" & "<div style='display:flex;justify-content:space-between;font-size:12.5px;margin-top:7px'><span style='color:#A9C6C2'>Faixa atual</span><b>" & FORMAT(faixa, "0") & " de 6" & "</b></div>" & "<div style='display:flex;justify-content:space-between;font-size:12.5px;margin-top:7px'><span style='color:#A9C6C2'>Alíquota efetiva</span><b>" & FORMAT(aliq, "0.0%") & "</b></div>" & "<div style='font-size:12px;color:#A9C6C2;display:flex;justify-content:space-between;margin-top:9px'><span>Uso da faixa atual</span><b style='color:#F4FBFA'>" & IF(ISBLANK(folga), "acima do limite", "faltam " & "R$ " & FORMAT(folga, "#,##0")) & "</b></div><div style='height:9px;border-radius:5px;background:#061A1C;margin-top:4px;overflow:hidden'><div style='height:9px;border-radius:5px;background:linear-gradient(90deg,#1F6F66,#34E0BE);width:" & FORMAT(INT(MIN(1, usoF) * 100), "0") & "%'></div></div>" & "<div style='font-size:12px;color:#A9C6C2;display:flex;justify-content:space-between;margin-top:9px'><span>Uso do limite do Simples</span><b style='color:#F4FBFA'>" & "faltam " & "R$ " & FORMAT(lim - rbt, "#,##0") & "</b></div><div style='height:9px;border-radius:5px;background:#061A1C;margin-top:4px;overflow:hidden'><div style='height:9px;border-radius:5px;background:linear-gradient(90deg,#1F6F66,#34E0BE);width:" & FORMAT(INT(MIN(1, usoL) * 100), "0") & "%'></div></div>" & "<div style='font-size:10.5px;color:#7A9A96;margin-top:10px'>Tabela simplificada para a demonstração.</div>"))
+			    & "</div>"
+		lineageTag: 240f0bd5-befc-53af-846b-7cb3b0dec2df
+
+	measure 'HTML M DRE' =
+			VAR m = MAX(fIndicador[COMPETENCIA])
+			VAR fM = FILTER(ALL(dMes), dMes[COMPETENCIA] = m)
+			VAR fAnt = FILTER(ALL(dMes), dMes[COMPETENCIA] = EDATE(m, -1))
+			VAR fAA = FILTER(ALL(dMes), dMes[COMPETENCIA] = EDATE(m, -12))
+			VAR f3 = FILTER(ALL(dMes), dMes[COMPETENCIA] > EDATE(m, -3) && dMes[COMPETENCIA] <= m)
+			VAR f12 = FILTER(ALL(dMes), dMes[COMPETENCIA] > EDATE(m, -12) && dMes[COMPETENCIA] <= m)
+			RETURN
+			    "<div style='font-family:Segoe UI,sans-serif;color:#F4FBFA;line-height:1.35;font-size:13px;background:linear-gradient(180deg,#123A3B,#0C2A2C);border:1px solid #1B4A49;border-radius:16px;box-sizing:border-box;padding:12px 14px 10px'><div style='font-size:15px;font-weight:700'>Resultado do mês</div><div style='font-size:12px;color:#A9C6C2;margin:1px 0 9px'>Demonstração de resultado resumida.</div><div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:11.5px;color:#7A9A96;padding-bottom:5px;border-bottom:1px solid #1F6F66'><div>Em reais</div><div style='text-align:right'>" & FORMAT(m, "mm/yyyy") & "</div><div style='text-align:right'>12 meses</div></div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>Receita bruta</div>"
+			    & (VAR x = CALCULATE([Faturamento], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Faturamento], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>(-) Impostos e devoluções</div>"
+			    & (VAR x = CALCULATE([Impostos e devoluções], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Impostos e devoluções], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;font-weight:700;padding:7px 0;border-bottom:1px solid #1F6F66'><div>Receita líquida</div>"
+			    & (VAR x = CALCULATE([Receita líquida], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Receita líquida], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>(-) Custo</div>"
+			    & (VAR x = CALCULATE([Custo total], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Custo total], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;font-weight:700;padding:7px 0;border-bottom:1px solid #1F6F66'><div>Lucro bruto</div>"
+			    & (VAR x = CALCULATE([Lucro bruto], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Lucro bruto], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>(-) Pessoal</div>"
+			    & (VAR x = CALCULATE([Despesas com pessoal], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Despesas com pessoal], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>(-) Administrativas</div>"
+			    & (VAR x = CALCULATE([Despesas administrativas], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Despesas administrativas], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>(-) Depreciação</div>"
+			    & (VAR x = CALCULATE([Despesa de depreciação], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Despesa de depreciação], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;font-weight:700;padding:7px 0;border-bottom:1px solid #1F6F66'><div>Resultado operacional</div>"
+			    & (VAR x = CALCULATE([Resultado operacional], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Resultado operacional], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>Resultado financeiro</div>"
+			    & (VAR x = CALCULATE([Resultado financeiro], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Resultado financeiro], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1B4A49'><div>(-) IRPJ e CSLL</div>"
+			    & (VAR x = CALCULATE([IRPJ e CSLL], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([IRPJ e CSLL], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "<div style='display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;font-size:12.5px;font-weight:700;padding:7px 0;border-bottom:1px solid #1F6F66'><div>Lucro líquido</div>"
+			    & (VAR x = CALCULATE([Lucro líquido], fM) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & (VAR x = CALCULATE([Lucro líquido], f12) RETURN "<div style='text-align:right;color:" & IF(x < 0, "#FF6B5E", "#F4FBFA") & "'>" & IF(ISBLANK(x), "–", FORMAT(x, "#,##0")) & "</div>")
+			    & "</div>"
+			    & "</div>"
+		lineageTag: 1b996bc4-2386-57df-b8a2-1db351fcef02
+
 	column Bloco
 		dataType: string
 		isHidden

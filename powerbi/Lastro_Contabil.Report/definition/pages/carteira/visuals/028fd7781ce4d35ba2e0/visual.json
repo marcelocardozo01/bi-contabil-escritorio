@@ -137,5 +137,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ac6c88b8d8a915d3d89c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Painel"
+              }
+            },
+            "Property": "HTML Cabeçalho Carteira"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
