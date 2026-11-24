@@ -21,3 +21,5 @@ ref table fAlerta
 ref table fSimples
 ref table Painel
 
+ref cultureInfo pt-BR
+

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "829a0db2a5e2535761f7",
   "position": {
-    "x": 880,
-    "y": 6,
+    "x": 872,
+    "y": 1,
     "z": 2000,
-    "height": 58,
-    "width": 190,
+    "height": 68,
+    "width": 194,
     "tabOrder": 2000
   },
   "visual": {
@@ -28,6 +28,7 @@
               },
               "queryRef": "dCliente.CLIENTE",
               "nativeQueryRef": "Cliente",
+              "active": true,
               "displayName": "Cliente"
             }
           ]
@@ -185,6 +186,40 @@
               "expr": {
                 "Literal": {
                   "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
                 }
               }
             }

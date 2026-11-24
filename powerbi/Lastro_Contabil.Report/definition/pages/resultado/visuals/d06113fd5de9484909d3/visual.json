@@ -28,6 +28,7 @@
               },
               "queryRef": "dMes.MES_ROTULO",
               "nativeQueryRef": "Mês",
+              "active": true,
               "displayName": "Mês"
             }
           ]

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "0ecbad571eb29870f22b",
   "position": {
-    "x": 1078,
-    "y": 6,
+    "x": 1074,
+    "y": 1,
     "z": 3000,
-    "height": 58,
-    "width": 186,
+    "height": 68,
+    "width": 194,
     "tabOrder": 3000
   },
   "visual": {
@@ -28,6 +28,7 @@
               },
               "queryRef": "dMes.MES_ROTULO",
               "nativeQueryRef": "Mês de referência",
+              "active": true,
               "displayName": "Mês de referência"
             }
           ]
@@ -185,6 +186,40 @@
               "expr": {
                 "Literal": {
                   "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
                 }
               }
             }

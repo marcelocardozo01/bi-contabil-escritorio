@@ -287,3 +287,4 @@ table fIndicador
 				    Tipos
 
 	annotation PBI_ResultType = Table
+

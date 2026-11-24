@@ -304,11 +304,11 @@ MEDIDAS["Painel"] = [(n, None, linhas) for n, linhas in {
 TABELA_DA_MEDIDA = {m[0]: t for t, ms in MEDIDAS.items() for m in ms}
 
 H = "html"
-SEG_CLI = [("slicer", 880, 6, 190, 58, None, {"Values": ["dCliente.CLIENTE|Cliente"]}), ("slicer", 1078, 6, 186, 58, None, {"Values": ["dMes.MES_ROTULO|Mês de referência"]})]
+SEG_CLI = [("slicer", 872, 1, 194, 68, None, {"Values": ["dCliente.CLIENTE|Cliente"]}), ("slicer", 1074, 1, 194, 68, None, {"Values": ["dMes.MES_ROTULO|Mês de referência"]})]
 PAGINAS = [
     ("carteira", "Carteira", [
         (H, 0, 0, 1280, 70, None, "HTML Cabeçalho Carteira"),
-        ("slicer", 880, 6, 190, 58, None, {"Values": ["dCliente.RESPONSAVEL|Responsável"]}), ("slicer", 1078, 6, 186, 58, None, {"Values": ["dCliente.REGIME|Regime"]}),
+        ("slicer", 872, 1, 194, 68, None, {"Values": ["dCliente.RESPONSAVEL|Responsável"]}), ("slicer", 1074, 1, 194, 68, None, {"Values": ["dCliente.REGIME|Regime"]}),
         (H, 16, 82, 1248, 112, None, "HTML Cartões Carteira"),
         (H, 16, 206, 830, 498, None, "HTML Tabela Carteira"), (H, 858, 206, 406, 498, None, "HTML Pauta")]),
     ("cliente", "Cliente", [
@@ -453,7 +453,8 @@ def visual(pag, i, spec):
                     "header": [{"properties": {"show": lit("true"), "fontColor": cor(C["tinta2"]), "textSize": lit("8D")}}],
                     "items": [{"properties": {"fontColor": cor(C["tinta"]), "background": cor(C["painel2"]), "textSize": lit("9D")}}]}
             cont.update({"background": [{"properties": {"show": lit("true"), "color": cor(C["painel2"]), "transparency": lit("0D")}}],
-                         "border": [{"properties": {"show": lit("true"), "color": cor(C["menta2"]), "radius": lit("9D")}}]})
+                         "border": [{"properties": {"show": lit("true"), "color": cor(C["menta2"]), "radius": lit("9D")}}],
+                         "padding": [{"properties": {"top": lit("2D"), "bottom": lit("4D"), "left": lit("8D"), "right": lit("8D")}}]})
         elif tipo == "clusteredColumnChart":
             objs = {"labels": [{"properties": {"show": lit("false")}}], "legend": [{"properties": {"show": lit("false")}}]}
         elif tipo == "lineChart":

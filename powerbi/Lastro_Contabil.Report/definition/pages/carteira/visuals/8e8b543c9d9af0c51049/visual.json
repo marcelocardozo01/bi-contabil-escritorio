@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "8e8b543c9d9af0c51049",
   "position": {
-    "x": 880,
-    "y": 6,
+    "x": 872,
+    "y": 1,
     "z": 2000,
-    "height": 58,
-    "width": 190,
+    "height": 68,
+    "width": 194,
     "tabOrder": 2000
   },
   "visual": {
@@ -28,6 +28,7 @@
               },
               "queryRef": "dCliente.RESPONSAVEL",
               "nativeQueryRef": "Responsável",
+              "active": true,
               "displayName": "Responsável"
             }
           ]
@@ -185,6 +186,40 @@
               "expr": {
                 "Literal": {
                   "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
                 }
               }
             }

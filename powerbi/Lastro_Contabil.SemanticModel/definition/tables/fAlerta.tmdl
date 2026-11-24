@@ -63,3 +63,4 @@ table fAlerta
 				    Tipos
 
 	annotation PBI_ResultType = Table
+

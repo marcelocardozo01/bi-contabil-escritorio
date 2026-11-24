@@ -76,3 +76,4 @@ table fCarteira
 				    Tipos
 
 	annotation PBI_ResultType = Table
+
